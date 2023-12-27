@@ -25,7 +25,7 @@ def PrintColLine():
 
 source_image_path = sys.argv[1]
 transformation_mode = int(sys.argv[2])
-target_image_path = "./IMG_7671.jpg"
+target_image_path = "./Standard.jpg"
 default_box = [[0, 2, 0, 0, 0],
                [2, 0, 0, 0, 4],
                [5, 2, 1, 5, 4],
