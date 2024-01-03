@@ -2,6 +2,9 @@ import cv2
 import sys
 from yolov7 import runModel
 import matplotlib.pyplot as plt
+from Transformation import align_images_Perspective_sift
+from Transformation import align_images_affine_sift
+
 
 def PrintRowLine():
     print(' ', end='')
@@ -20,20 +23,24 @@ def PrintColLine():
     print('|')
 
 
-file_path = sys.argv[1]
+target_image_path = sys.argv[1]
+source_image_path = sys.argv[2]
+transformation_mode = int(sys.argv[3])
+
 default_box = [[0, 2, 0, 0, 0],
                [2, 0, 0, 0, 4],
                [4, 2, 1, 6, 2],
                [11, 3, 5, 2, 5]
                ]
-
-
-if file_path:
-    image = cv2.imread(file_path)
+if source_image_path:
+    if transformation_mode == 0:
+        image = align_images_affine_sift(source_image_path, target_image_path)
+    elif transformation_mode == 1:
+        image = align_images_Perspective_sift(source_image_path, target_image_path)
     if image is not None:
-        box_num, img = runModel(image)#輸入yolov7模型偵測
+        box_num, img = runModel(image)  # 輸入yolov7模型偵測
         tmp = 0
-        for i in range(0, 4):#輸出偵測的結果
+        for i in range(0, 4):  # 輸出偵測的結果
             PrintRowLine()
             PrintColLine()
             for j in range(0, 5):
@@ -45,7 +52,7 @@ if file_path:
             print('|')
             PrintColLine()
         PrintRowLine()
-        plt.imshow(img)#偵測結果圖片
+        plt.imshow(img)  # 偵測結果圖片
         plt.pause(0)
             
     else:
