@@ -1,7 +1,7 @@
+
 import cv2
 import numpy as np
 from scipy.interpolate import Rbf
-
 
 def align_images_Perspective_sift(source_path, target_path):
     
@@ -36,7 +36,6 @@ def align_images_Perspective_sift(source_path, target_path):
     aligned_image = cv2.warpPerspective(source_img, M, (target_img.shape[1], target_img.shape[0]))
 
     cv2.imwrite('./warpPerspective.jpg', aligned_image)
-    return aligned_image
 
 
 def align_images_affine_sift(source_path, target_path):
@@ -72,19 +71,16 @@ def align_images_affine_sift(source_path, target_path):
     aligned_image = cv2.warpAffine(source_img, M, (target_img.shape[1], target_img.shape[0]))
 
     cv2.imwrite('./warpAffine.jpg', aligned_image)
-    return aligned_image
 
 
-'''
 def main():
-    source_image_path = './IMG_7673.JPG'  # 斜拍的照片
+    source_image_path = './IMG_9963.jpg'  # 斜拍的照片
     target_image_path = './IMG_7671.JPG'  # 俯拍的照片(目標)
 
     # 轉成俯拍照片
     align_images_affine_sift(source_image_path, target_image_path)
     align_images_Perspective_sift(source_image_path, target_image_path)
-
+    
 
 if __name__ == '__main__':
-    main
-'''
+    main()
