@@ -21,13 +21,6 @@ def PrintColLine():
 
 
 file_path = sys.argv[1]
-'''
-default_box = [[0, 2, 0, 0, 0],
-               [2, 0, 0, 0, 4],
-               [5, 2, 1, 5, 4],
-               [20, 3, 3, 2, 4]
-               ]
-'''
 default_box = [[0, 2, 0, 0, 0],
                [2, 0, 0, 0, 4],
                [4, 2, 1, 6, 2],
@@ -38,9 +31,6 @@ default_box = [[0, 2, 0, 0, 0],
 if file_path:
     image = cv2.imread(file_path)
     if image is not None:
-        '''
-        進行圖片矯正的部分
-        '''
         box_num, img = runModel(image)#輸入yolov7模型偵測
         tmp = 0
         for i in range(0, 4):#輸出偵測的結果
