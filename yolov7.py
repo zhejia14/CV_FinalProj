@@ -7,6 +7,8 @@ from PIL import Image
 import matplotlib.pyplot as plt
 from pathlib import Path
 from collections import OrderedDict,namedtuple
+
+from detection_error import error
 cuda = False
 
 w = "model_data/yolov7.onnx"
@@ -14,6 +16,9 @@ providers = ['CUDAExecutionProvider', 'CPUExecutionProvider'] if cuda else ['CPU
 session = ort.InferenceSession(w, providers=providers)
 boxes = [0,0,0,0,0,0,0,0,0,0,
             0,0,0,0,0,0,0,0,0,0]
+
+# 儲存偵測出的藥品名稱以及x, y座標
+detection_results = []
 
 def letterbox(im, new_shape=(640, 640), color=(114, 114, 114), auto=True, scaleup=True, stride=32):
     # Resize and pad image while meeting stride-multiple constraints
@@ -44,6 +49,8 @@ def letterbox(im, new_shape=(640, 640), color=(114, 114, 114), auto=True, scaleu
     return im, r, (dw, dh)
 
 def detection(img):
+
+    error_img = img
     boxes = [0,0,0,0,0,0,0,0,0,0,
             0,0,0,0,0,0,0,0,0,0]
     names = ['med1','med2','med3','med4','med5','med6','med7','med8','med9','med10','med11','med12','med13','med14','med15','med16','med17','med18','med19','med20']
@@ -90,9 +97,19 @@ def detection(img):
         name += ' '+str(score)
         cv2.rectangle(image,tuple(box[:2]),tuple(box[2:]),color,2)
         cv2.putText(image,name,(box[0], box[1] - 2),cv2.FONT_HERSHEY_SIMPLEX,0.75,[225, 255, 255],thickness=2)  
-        '''
-        在這個部分會知道標記框的x,y座標，預計在這邊紀錄是否有擺放錯誤
-        '''
+        #將偵測出來的藥品名稱, x,y座標存到detection_results的list
+        detection_results.append((name, box[0], box[1], box[2], box[3]))
+        #print(f"{name}: x={box[0]}, y={box[1]}")
+
+    #判斷是否有放錯位置
+    error_data = error(detection_results, boxes)
+    for entry in error_data:
+        name, x0, y0, x1, y1 = entry
+        color = (random.randint(0, 255), random.randint(0, 255), random.randint(0, 255))
+        cv2.rectangle(error_img, (x0, y0), (x1, y1), color, 5)
+        cv2.putText(error_img,name,(x0, y0 - 2),cv2.FONT_HERSHEY_SIMPLEX,0.75,[225, 255, 255],thickness=2)
+    cv2.imwrite("./detection_error.jpg", error_img)
+        
     img = Image.fromarray(ori_images[0])
     img.save('Result.jpg')
     return boxes, img
