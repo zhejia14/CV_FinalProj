@@ -7,9 +7,9 @@ conda env create --name cvproj --file=env.yaml
 #### 3.運行程式
 ##### Affine Method
 ```
-python project.py ./Test_1.jpg 0 
+python project.py Standard.jpg Test_1.jpg 0 
 ```
 ##### Perspective Method
 ```
-python project.py ./Test_1.jpg 1
+python project.py Standard.jpg Test_1.jpg 1
 ```
